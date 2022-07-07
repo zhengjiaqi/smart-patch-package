@@ -12,6 +12,7 @@ import { reversePatch } from "./patch/reverse"
 import semver from "semver"
 import { readPatch } from "./patch/read"
 import { packageIsDevDependency } from "./packageIsDevDependency"
+import shell from "shelljs"
 
 class PatchApplicationError extends Error {
   constructor(msg: string) {
@@ -40,6 +41,13 @@ function getInstalledPackageVersion({
   isDevOnly: boolean
   patchFilename: string
 }): null | string {
+  let packageName = ""
+  const packageNameMatch = path.match(/\/([^/]*?)$/)
+  if (packageNameMatch) {
+    packageName = packageNameMatch[1]
+  }
+  const correctNodeModules = findCorrectNodeModules(packageName)
+  appPath = correctNodeModules.replace("node_modules", "")
   const packageDir = join(appPath, path)
   if (!existsSync(packageDir)) {
     if (process.env.NODE_ENV === "production" && isDevOnly) {
@@ -90,7 +98,7 @@ export function applyPatchesForApp({
   patchDir: string
   shouldExitWithError: boolean
 }): void {
-  const patchesDirectory = join(appPath, patchDir)
+  const patchesDirectory = join(process.cwd(), patchDir)
   const files = findPatchFiles(patchesDirectory)
 
   if (files.length === 0) {
@@ -112,14 +120,8 @@ export function applyPatchesForApp({
         continue
       }
 
-      const {
-        name,
-        version,
-        path,
-        pathSpecifier,
-        isDevOnly,
-        patchFilename,
-      } = packageDetails
+      const { name, version, path, pathSpecifier, isDevOnly, patchFilename } =
+        packageDetails
 
       const installedPackageVersion = getInstalledPackageVersion({
         appPath,
@@ -189,7 +191,7 @@ export function applyPatchesForApp({
           }),
         )
       }
-    } catch (error) {
+    } catch (error: any) {
       if (error instanceof PatchApplicationError) {
         errors.push(error.message)
       } else {
@@ -226,6 +228,25 @@ export function applyPatchesForApp({
   }
 }
 
+// 找到最近的父级node_modules
+function findCorrectNodeModules(
+  target: string,
+  currentDirectory?: string,
+): string {
+  const cwd = currentDirectory || process.cwd()
+  if (!shell.test("-e", cwd)) {
+    return ""
+  }
+  const parent = resolve(cwd, "..")
+  const currentNodemodules = resolve(parent, "node_modules")
+  const currentNodemodulesTarget = resolve(currentNodemodules, target)
+
+  if (shell.test("-d", currentNodemodulesTarget)) {
+    return currentNodemodules
+  }
+  return findCorrectNodeModules(target, parent)
+}
+
 export function applyPatch({
   patchFilePath,
   reverse,
@@ -237,7 +258,23 @@ export function applyPatch({
   packageDetails: PackageDetails
   patchDir: string
 }): boolean {
-  const patch = readPatch({ patchFilePath, packageDetails, patchDir })
+  let packageName = ""
+  const packageNameMatch = patchFilePath.match(/\/([^/]*?)\+.*?.patch$/)
+  if (packageNameMatch) {
+    packageName = packageNameMatch[1]
+  }
+  const correctNodeModules = findCorrectNodeModules(packageName)
+  let patch = readPatch({ patchFilePath, packageDetails, patchDir })
+
+  patch = patch.map((eff: any) => {
+    const correctPath = resolve(
+      correctNodeModules,
+      eff.path.replace("node_modules/", ""),
+    )
+    eff.path = correctPath
+    return eff
+  })
+
   try {
     executeEffects(reverse ? reversePatch(patch) : patch, { dryRun: false })
   } catch (e) {

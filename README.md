@@ -2,6 +2,10 @@
   <img src="https://ds300.github.io/patch-package/patch-package.svg" width="80%" alt="patch-package" />
 </p>
 
+## Statement
+
+**This is a fork from [patch-package](https://github.com/ds300/patch-package)，made some changes to make it smarter**
+
 `patch-package` lets app authors instantly make and keep fixes to npm
 dependencies. It's a vital band-aid for those of us living on the bleeding edge.
 
@@ -37,14 +41,14 @@ Then
 
 ### npm
 
-    npm i patch-package
+    npm i @zheng/patch-package
 
 You can use `--save-dev` if you don't need to run npm in production, e.g. if
 you're making a web frontend.
 
 ### yarn
 
-    yarn add patch-package postinstall-postinstall
+    yarn add @zheng/patch-package postinstall-postinstall
 
 You can use `--dev` if you don't need to run yarn in production, e.g. if you're
 making a web frontend.

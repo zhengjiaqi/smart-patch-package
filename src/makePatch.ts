@@ -227,7 +227,7 @@ export function makePatch({
 
     try {
       parsePatchFile(diffResult.stdout.toString())
-    } catch (e) {
+    } catch (e: any) {
       if (
         (e as Error).message.includes("Unexpected file mode string: 120000")
       ) {
