@@ -1,6 +1,6 @@
 {
-  "name": "@zheng/patch-package",
-  "version": "6.4.7",
+  "name": "smart-patch-package",
+  "version": "6.4.8",
   "description": "Fix broken node modules with no fuss",
   "main": "dist/index.js",
   "repository": "github:zhengjiaqi/patch-package",

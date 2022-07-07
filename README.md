@@ -41,14 +41,14 @@ Then
 
 ### npm
 
-    npm i @zheng/patch-package
+    npm i smart-patch-package
 
 You can use `--save-dev` if you don't need to run npm in production, e.g. if
 you're making a web frontend.
 
 ### yarn
 
-    yarn add @zheng/patch-package postinstall-postinstall
+    yarn add smart-patch-package postinstall-postinstall
 
 You can use `--dev` if you don't need to run yarn in production, e.g. if you're
 making a web frontend.
