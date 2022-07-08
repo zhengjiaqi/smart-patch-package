@@ -42,7 +42,7 @@ function getInstalledPackageVersion({
   patchFilename: string
 }): null | string {
   let packageName = ""
-  const packageNameMatch = path.match(/\/([^/]*?)$/)
+  const packageNameMatch = path.match(/node_modules\/([^/]+)[\/]?/)
   if (packageNameMatch) {
     packageName = packageNameMatch[1]
   }
