@@ -120,8 +120,14 @@ export function applyPatchesForApp({
         continue
       }
 
-      const { name, version, path, pathSpecifier, isDevOnly, patchFilename } =
-        packageDetails
+      const {
+        name,
+        version,
+        path,
+        pathSpecifier,
+        isDevOnly,
+        patchFilename,
+      } = packageDetails
 
       const installedPackageVersion = getInstalledPackageVersion({
         appPath,
@@ -238,7 +244,8 @@ function findCorrectNodeModules(
     return ""
   }
   const parent = resolve(cwd, "..")
-  const currentNodemodules = resolve(parent, "node_modules")
+  const current = resolve(cwd)
+  const currentNodemodules = resolve(current, "node_modules")
   const currentNodemodulesTarget = resolve(currentNodemodules, target)
 
   if (shell.test("-d", currentNodemodulesTarget)) {
