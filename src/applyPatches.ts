@@ -47,7 +47,7 @@ function getInstalledPackageVersion({
     packageName = packageNameMatch[1]
   }
   const correctNodeModules = findCorrectNodeModules(packageName)
-  appPath = correctNodeModules.replace("node_modules", "")
+  appPath = correctNodeModules.replace(/(.*)(node_modules)/, "$1")
   const packageDir = join(appPath, path)
   if (!existsSync(packageDir)) {
     if (process.env.NODE_ENV === "production" && isDevOnly) {
