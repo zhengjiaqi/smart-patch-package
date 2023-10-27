@@ -1,6 +1,6 @@
 {
   "name": "smart-patch-package",
-  "version": "6.4.11",
+  "version": "6.4.12",
   "description": "Fix broken node modules with no fuss",
   "main": "dist/index.js",
   "repository": "github:zhengjiaqi/smart-patch-package",

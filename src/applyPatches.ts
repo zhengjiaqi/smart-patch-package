@@ -41,12 +41,7 @@ function getInstalledPackageVersion({
   isDevOnly: boolean
   patchFilename: string
 }): null | string {
-  let packageName = ""
-  const packageNameMatch = path.match(/node_modules\/([^/]+)[\/]?/)
-  if (packageNameMatch) {
-    packageName = packageNameMatch[1]
-  }
-  const correctNodeModules = findCorrectNodeModules(packageName)
+  const correctNodeModules = findCorrectNodeModules(pathSpecifier)
   appPath = correctNodeModules.replace(/(.*)(node_modules)/, "$1")
   const packageDir = join(appPath, path)
   if (!existsSync(packageDir)) {
@@ -265,12 +260,9 @@ export function applyPatch({
   packageDetails: PackageDetails
   patchDir: string
 }): boolean {
-  let packageName = ""
-  const packageNameMatch = patchFilePath.match(/\/([^/]*?)\+.*?.patch$/)
-  if (packageNameMatch) {
-    packageName = packageNameMatch[1]
-  }
-  const correctNodeModules = findCorrectNodeModules(packageName)
+  const correctNodeModules = findCorrectNodeModules(
+    packageDetails.pathSpecifier,
+  )
   let patch = readPatch({ patchFilePath, packageDetails, patchDir })
 
   patch = patch.map((eff: any) => {
